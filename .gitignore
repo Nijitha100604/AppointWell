@@ -4,3 +4,4 @@ backend/node_modules/
 build/
 dist/
 .env
+admin/node_modules/
