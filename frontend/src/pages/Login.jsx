@@ -1,15 +1,66 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContext } from '../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
 
+  // eslint-disable-next-line no-unused-vars
+  const {backendUrl, token, setToken} = useContext(AppContext)
+  const navigate = useNavigate()
+
   const [state, setState] = useState("Sign Up")
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [name, setName] = useState("");
 
   const onSubmitHandler = async(event) =>{
       event.preventDefault()
+
+      try{
+
+        if(state === 'Sign Up'){
+
+          const {data} = await axios.post(backendUrl + '/api/user/register', {name, password, email})
+          if(data.success){
+            localStorage.setItem('token', data.token)
+            setToken(data.token)
+          }
+          else
+          {
+            toast.error(data.message)
+          }
+
+        }
+        else
+        {
+
+          const {data} = await axios.post(backendUrl + '/api/user/login', {email, password})
+          if(data.success){
+            localStorage.setItem('token', data.token)
+            setToken(data.token)
+          }
+          else
+          {
+            toast.error(data.message)
+          }
+
+        }
+
+      } catch(error){
+        toast.error(error.message)
+      }
   }
+
+  useEffect(()=>{
+    if(token)
+    {
+      navigate('/')
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
 
   return (
     <form className="min-h-[80vh] flex items-center" onSubmit = {onSubmitHandler}>
@@ -21,21 +72,21 @@ const Login = () => {
           <div className="w-full">
             <p>Full Name</p>
             <input className="border border-zinc-300 rounded w-full p-2 mt-1"
-                    type="text" onChange={(e)=>setName(e.target.name)} value={name} required/>
+                    type="text" onChange={(e)=>setName(e.target.value)} value={name} required/>
           </div> 
         }
         
         <div className="w-full">
           <p>Email</p>
           <input className="border border-zinc-300 rounded w-full p-2 mt-1"
-          type="email" onChange={(e)=>setEmail(e.target.email)} value={email} required/>
+          type="email" onChange={(e)=>setEmail(e.target.value)} value={email} required/>
         </div>
         <div className="w-full">
           <p>Password</p>
           <input className="border border-zinc-300 rounded w-full p-2 mt-1"
-          type="password" onChange={(e)=>setPassword(e.target.password)} value={password} required/>
+          type="password" onChange={(e)=>setPassword(e.target.value)} value={password} required/>
         </div>
-        <button className="bg-indigo-400 text-white w-full py-2 rounded-md text-base">{state === 'Sign Up' ? "Create Account" : "log in"}</button>
+        <button type='submit' className="bg-indigo-400 text-white w-full py-2 rounded-md text-base">{state === 'Sign Up' ? "Create Account" : "log in"}</button>
         {
           state === "Sign Up" ? 
           <p>Already have an account ? <span onClick={()=>setState("Login")} className="text-indigo-400 underline cursor-pointer">Login here</span></p> :
