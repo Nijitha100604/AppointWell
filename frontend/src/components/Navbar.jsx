@@ -7,7 +7,7 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
-  const {token, setToken} = useContext(AppContext)
+  const {token, setToken, userData} = useContext(AppContext)
 
   const [showMenu, setShowMenu] = useState(false);
 
@@ -42,13 +42,13 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
 
             {
-                token ? 
+                token && userData ? 
 
                 <div className="flex items-center gap-2 cursor-pointer group relative">
                     
                     <img 
                     className="w-8 rounded-full"
-                    src={assets.profile_pic} alt="Profile Picture"/>
+                    src={userData.image || assets.profile_pic} alt="Profile Picture"/>
                     
                     <img 
                     className="w-2.5"
@@ -66,12 +66,15 @@ const Navbar = () => {
                 </div> 
 
                 : <button onClick = {()=>navigate('/login')}
-            className="bg-teal-600 text-white px-8 py-3 rounded-full font-light hidden md:block cursor-pointer">Create account</button>
+                  className="bg-teal-600 text-white px-8 py-3 rounded-full font-light hidden md:block cursor-pointer">Create account</button>
             }
+
+            {/* ------ Mobile menu ------ */}
+
             <img onClick ={()=>setShowMenu(true)}
             className="w-6 md:hidden" src={assets.menu_icon} alt="menu-icon" />
 
-            {/* ------ Mobile menu ------ */}
+
             <div className={`${showMenu ? "fixed w-full" : "h-0 w-0"} md:hidden right-0 top-0 bottom-0 z-20 overflow-hidden bg-white transition-all`}>
                 <div className="flex items-center justify-between px-5 py-6">
                     <img className="w-36"
