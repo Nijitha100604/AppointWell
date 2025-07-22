@@ -10,10 +10,11 @@ const MyAppointments = () => {
 
   const {backendUrl, token, getDoctorsData} = useContext(AppContext)
 
-  const [appointments, setAppointments] = useState([])
-  const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-
   const navigate = useNavigate()
+
+  const [appointments, setAppointments] = useState([])
+  
+  const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
   const slotDateFormat = (slotDate) =>{
     const dateArray = slotDate.split('_')
@@ -167,10 +168,11 @@ const MyAppointments = () => {
 
               </div>
               <div className="flex flex-col gap-2 justify-end">
-                {!item.cancelled && item.payment && <button className = "sm:min-w-48 py-2 border rounded text-stone-500 bg-indigo-200">Paid</button>}
-                {!item.cancelled && !item.payment && <button onClick={()=>{appointmentRazorpay(item._id); updatePayment(item._id)}} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-indigo-400 hover:text-white transition-all duration:500">Pay Online</button> }
-                {!item.cancelled && <button onClick={()=>cancelAppointment(item._id)} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration:500">Cancel Appointment</button> }
-                {item.cancelled && <button className="sm:min-w-48 py-2 border border-red-500 rounded text-red-500">Appointment cancelled</button>}
+                {!item.cancelled && item.payment && !item.isCompleted && <button className = "sm:min-w-48 py-2 border rounded text-stone-500 bg-indigo-200">Paid</button>}
+                {!item.cancelled && !item.payment && !item.isCompleted && <button onClick={()=>{appointmentRazorpay(item._id); updatePayment(item._id)}} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-indigo-400 hover:text-white transition-all duration:500">Pay Online</button> }
+                {!item.cancelled && !item.isCompleted && <button onClick={()=>cancelAppointment(item._id)} className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration:500">Cancel Appointment</button> }
+                {item.cancelled && !item.isCompleted && <button className="sm:min-w-48 py-2 border border-red-500 rounded text-red-500">Appointment cancelled</button>}
+                {item.isCompleted && <button  className="sm:min-w-48 py-2 border border-green-500 rounded text-green-500">Completed</button>}
               </div>
             </div>
           ))
